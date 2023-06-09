@@ -1,0 +1,56 @@
+name: Docker
+
+on:
+    push:
+      tags: ['v*.*.*']
+env:
+  IMAGE_NAME: dockerize-node-app
+
+
+jobs:
+  build:
+    name: Build container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+        
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+
+      - name: Log into registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.AZURE_ACR_ENDPOINT }}
+          username: ${{ secrets.AZURE_ACR_USERNAME }}
+          password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+      - name: Build & Push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          build-args: version=${{ steps.tag.outputs.tag }}
+          tags: "${{ secrets.AZURE_ACR_ENDPOINT }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}"
+
+
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Deploy to Azure Container Instances'
+        uses: 'azure/aci-deploy@v1'
+        with:
+          resource-group: test_group
+          dns-name-label: node-app-cphpoc
+          image: "${{ secrets.AZURE_ACR_ENDPOINT }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}"
+          registry-login-server: ${{ secrets.AZURE_ACR_ENDPOINT  }}
+          registry-username: ${{ secrets.AZURE_ACR_USERNAME }}
+          registry-password: ${{ secrets.AZURE_ACR_PASSWORD }}
+          name: cph-poc-node-app
+          location: 'east us'
