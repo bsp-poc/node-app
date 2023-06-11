@@ -2,39 +2,21 @@
 name: "NPM Build to Deploy"
 on:
   push:
-    branches: [ "main", "dev","qa","staging", "uat" ]
+    branches: [ "dev" ]
   workflow_dispatch:
 
 env:
   AZURE_PUBLISH_PROFILE: 'secrets.AZUREAPPSERVICE_PUBLISHPROFILE_441B36245F134200B9C77A716EE5BDA7'
-  AZURE_WEBAPP_NAME: 'npm-poc-run'    # Azure App Service: Web App Name
+  AZURE_WEBAPP_NAME: 'node-poc'    # Azure App Service: Web App Name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '18.x'                # set this to the node version to use
 
 permissions:
   contents: read
+  
 
 jobs:
-
-  setup-stage:
-    outputs:
-      env-name: ${{ steps.env-name.outputs.env }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Environment Name
-        id: env-name
-        run: echo "::set-output name=env::${{ fromJSON('{"main":"prod","develop":"dev"}')[github.ref_name] }}"
-        
-  env_var:
-    name: env_var_test
-    needs: setup-stage
-    runs-on: ubuntu-latest
-    steps:
-      - name: npm install, build, and test
-        run: |
-          echo Environment: ${{ needs.setup-stage.outputs.env-name }}
-
-
+ 
   sonarcloud: #security integration
     name: SonarCloud
     runs-on: ubuntu-latest
@@ -45,7 +27,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_SECRET_TOKEN }}  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
@@ -81,7 +63,6 @@ jobs:
     needs: 
       - sonarcloud
       - OSSAR-Scan
-      - env_var
     steps:
     - uses: actions/checkout@v3
     - name: Set up Node.js
@@ -152,63 +133,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - build
-
-    # environment:
-    #   name: 'production'
-    #   url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    environment: dev
     steps:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
         name: node-app
 
-    - name: deploy to prod
-      if: github.ref == 'refs/heads/main' ||  github.ref == 'refs/heads/prod'
+    - name: deploy to prod #if: github.ref == 'refs/heads/main' ||  github.ref == 'refs/heads/prod'
       id: deploy-to-webapp-prod
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name:  "production"
-
-    - name: deploy to dev
-      if: github.ref == 'refs/heads/dev'
-      id: deploy-to-webapp-dev
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_DEV }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
         slot-name:  "dev"
-
-    - name: deploy to qa
-      if: github.ref == 'refs/heads/qa'
-      id: deploy-to-webapp-qa
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_QA }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name:  "qa"
-
-    - name: deploy to staging
-      if: github.ref == 'refs/heads/staging'
-      id: deploy-to-webapp-staging
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_STAGING }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name:  "staging"
-
-    - name: deploy to uat
-      if: github.ref == 'refs/heads/uat'
-      id: deploy-to-webapp-uat
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_UAT }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name:  "uat"
