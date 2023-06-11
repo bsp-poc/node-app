@@ -134,3 +134,6 @@ dist
 
 # terrform
 terraform/.terraform*
+
+# vscode
+.vscode*
