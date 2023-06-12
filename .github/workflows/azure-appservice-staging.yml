@@ -1,5 +1,5 @@
 
-name: "NPM Build to Deploy"
+name: "NPM - Deploy to <Staging>"
 on:
   push:
     branches: [ "staging" ]
@@ -73,7 +73,7 @@ jobs:
         cache: 'npm'
     - name: npm install, build, and test
       run: |
-        npm config set package "cph-poc"
+        npm config set package "bsp-poc"
         npm install
         npm run build --if-present
         npm run test --if-present
@@ -117,7 +117,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://npm.pkg.github.com/
-          scope: '@cph-poc'
+          scope: '@bsp-poc'
       - run: npm install
       - run: npm ci
       - run: npm publish
