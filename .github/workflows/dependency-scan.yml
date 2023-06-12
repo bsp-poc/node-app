@@ -1,0 +1,39 @@
+# Dependency Review Action
+#
+# This Action will scan dependency manifest files that change as part of a Pull Request, surfacing known-vulnerable versions of the packages declared or updated in the PR. Once installed, if the workflow run is marked as required, PRs introducing known-vulnerable packages will be blocked from merging.
+#
+# Source repository: https://github.com/actions/dependency-review-action
+# Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
+name: 'Dependency Review'
+on:
+  push:
+    branches: ["dev"]
+  pull_request:
+    branches: ["qa", "staging", "uat", "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v2
+
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: ChatGPT explain code
+    steps:
+      - name: ChatGTP explain code
+        uses: cirolini/chatgpt-github-actions@v1.3
+        with:
+          openai_api_key: ${{ secrets.OPEN_AI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_pr_id: ${{ github.event.number }}
+          openai_engine: "text-davinci-002" #optional
+          openai_temperature: 0.5 #optional
+          openai_max_tokens: 2048 #optional
+          mode: file # file or patch 

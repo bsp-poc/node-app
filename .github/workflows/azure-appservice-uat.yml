@@ -2,7 +2,7 @@
 name: "NPM Build to Deploy"
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "uat" ]
   workflow_dispatch:
 
 env:
@@ -10,7 +10,7 @@ env:
   AZURE_WEBAPP_NAME: 'node-poc'    # Azure App Service: Web App Name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '18.x'                # set this to the node version to use
-  AZURE_DEPLOYMENT_SLOT: 'dev'
+  AZURE_DEPLOYMENT_SLOT: 'uat'
 
 permissions:
   contents: read
@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - build
-    environment: dev
+    environment: uat
     steps:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
@@ -148,4 +148,4 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name: "${{ env.AZURE_DEPLOYMENT_SLOT }}"
+        slot-name:  "${{ env.AZURE_DEPLOYMENT_SLOT }}"
