@@ -6,10 +6,8 @@
 # Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
 name: 'Dependency Review'
 on:
-  push:
-    branches: ["dev"]
   pull_request:
-    branches: ["qa", "staging", "uat", "main" ]
+    branches: ["dev", "qa", "staging", "uat", "main" ]
 
 permissions:
   contents: read
