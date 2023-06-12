@@ -1,5 +1,5 @@
 
-name: "NPM Build to Deploy"
+name: "NPM - Deploy to <UAT>"
 on:
   push:
     branches: [ "uat" ]

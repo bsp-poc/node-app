@@ -1,5 +1,5 @@
 
-name: "NPM Build to Deploy"
+name: "NPM - Deploy to <Staging>"
 on:
   push:
     branches: [ "staging" ]
