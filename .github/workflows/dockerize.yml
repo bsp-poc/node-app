@@ -1,4 +1,4 @@
-name: Docker
+name: "Publish to CR and Deploy to Container Instance"
 
 on:
     push:
