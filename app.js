@@ -5,7 +5,7 @@ var app = express();
 
 let appInsights = require("applicationinsights");
 
-appInsights.setup("InstrumentationKey=a012f4a3-4330-43fc-8e74-31a7a37eb235;IngestionEndpoint=https://southeastasia-1.in.applicationinsights.azure.com/;LiveEndpoint=https://southeastasia.livediagnostics.monitor.azure.com/")
+appInsights.setup("InstrumentationKey=8dfd45ed-33b9-4a33-bdb1-e81ac667f611;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/")
 .setAutoDependencyCorrelation(false)
 .start();
 

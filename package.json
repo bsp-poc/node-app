@@ -1,6 +1,6 @@
 {
   "name": "@bsp-poc/node-app",
-  "version": "v0.0.0",
+  "version": "v0.0.1",
   "private": false,
   "scripts": {
     "lint": "npm-run-all --parallel lint:*",
