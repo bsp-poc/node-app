@@ -38,8 +38,6 @@ jobs:
         export ARM_CLIENT_SECRET="${{ secrets.ARM_CLIENT_SECRET}}"
         export ARM_SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID}}"
         export ARM_TENANT_ID="${{ secrets.ARM_TENANT_ID}}"
-
-        cd terraform
     - name: init
       run: terraform init
 
@@ -55,6 +53,5 @@ jobs:
     
     - name: apply 
       run: |
-        pwd
-        ls  
+        cd terraform 
         terraform apply -auto-approve -input=false
