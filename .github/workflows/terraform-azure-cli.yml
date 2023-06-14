@@ -54,7 +54,7 @@ jobs:
       run: terraform validate
     
     - name: apply 
-      run:
+      run: |
         pwd
-        ls -a 
+        ls  
         terraform apply -auto-approve -input=false
