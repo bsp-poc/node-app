@@ -134,6 +134,9 @@ dist
 
 # terrform
 terraform/.terraform*
+.terraform
+terraform.tfstate*
+
 
 # vscode
 .vscode*

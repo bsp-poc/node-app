@@ -23,17 +23,11 @@ jobs:
       with:
         terraform_version: 1.5.0
    
-    # - name: execute terraform scripts
-    #   run: |
-    #     export ARM_CLIENT_ID="${{ secrets.ARM_CLIENT_ID}}"
-    #     export ARM_CLIENT_SECRET="${{ secrets.ARM_CLIENT_SECRET}}"
-    #     export ARM_SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID}}"
-    #     export ARM_TENANT_ID="${{ secrets.ARM_TENANT_ID}}"
 
     - name: Azure Login
       uses: azure/login@v1
       with:
-        #creds: ${{ secrets.AZURE_CREDENTIALS}}
+        creds: ${{ secrets.AZURE_CREDENTIALS}}
         client-id: ${{ secrets.ARM_CLIENT_ID }}
         tenant-id: ${{ secrets.ARM_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -52,4 +46,4 @@ jobs:
         terraform init
         terraform fmt
         terraform validate
-        terraform apply -auto-approve -input=false
+        terraform-bin apply -auto-approve -var=subscription_id="${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var=tenant_id="${{ secrets.ARM_TENANT_ID}}" -var=client_id="${{ secrets.ARM_CLIENT_ID }}" -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}"
