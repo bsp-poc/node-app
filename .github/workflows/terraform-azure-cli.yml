@@ -53,8 +53,8 @@ jobs:
     - name: validate
       run: terraform validate
     
-    - name: appy 
-      run: |
+    - name: apply 
+      run:
+        pwd
+        ls -a 
         terraform apply -auto-approve -input=false
-        terraform show
-        terraform state list
