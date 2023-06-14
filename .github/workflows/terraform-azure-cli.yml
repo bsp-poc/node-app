@@ -1,6 +1,8 @@
 on:
   push:
     branches: [ "terraform" ]
+    paths:
+      - terraform/**
 
 name: AzureCLISample
 
@@ -23,6 +25,12 @@ jobs:
           az account show
           az storage -h
 
+    - name: Setup Terraform with specified version on the runner
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+
+   
     - name: execute terraform scripts
       run: |
         export ARM_CLIENT_ID="${{ secrets.ARM_CLIENT_ID}}"
