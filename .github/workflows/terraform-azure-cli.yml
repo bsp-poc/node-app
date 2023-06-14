@@ -3,7 +3,11 @@ on:
     branches: [ "terraform" ]
 
 name: AzureCLISample
-
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  
 jobs:
 
   build-and-deploy:
@@ -34,7 +38,7 @@ jobs:
         tenant-id: ${{ secrets.ARM_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-        
+
     - name: execute terraform
       run: |
         cd terraform
