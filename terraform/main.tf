@@ -7,6 +7,14 @@ terraform {
     }
   }
 
+  backend "azurerm" {
+      resource_group_name  = "tfstate"
+      storage_account_name = "tfstate20025"
+      container_name       = "tfstate"
+      key                  = "terraform.tfstate"
+      access_key           = "4dvockTjYvbQSbTiXsmzSNbMPe81LalCSQ/hbEPqT4WFiblel7wuGrgEyh0yOBXcP2FMD77mx399+AStDrpfWw=="
+  }
+
   required_version = ">= 1.1.0"
 }
 
@@ -45,6 +53,6 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "myTFResourceGroup"
+  name     = "myTFResourceGroup2"
   location = "westus2"
 }
