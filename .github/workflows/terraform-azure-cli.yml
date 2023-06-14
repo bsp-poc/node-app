@@ -1,8 +1,6 @@
 on:
   push:
     branches: [ "terraform" ]
-    paths:
-      - terraform/**
 
 name: AzureCLISample
 
