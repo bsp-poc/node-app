@@ -23,6 +23,9 @@ jobs:
           az account show
           az storage -h
 
+    - name: checkout latest from running bracnh ${GITHUB_REF##*/}
+      uses: actions/checkout@v3
+
     - name: Setup Terraform with specified version on the runner
       uses: hashicorp/setup-terraform@v2
       with:
