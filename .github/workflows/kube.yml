@@ -29,7 +29,7 @@ jobs:
         uses: Azure/k8s-deploy@v4
         with:
           namespace: 'default'
-        #   manifests: |
-        #      azure-vote-all-in-one-redis.yaml
+          manifests: |
+            k8-manifest.yml
           images: 'bsppoc.azurecr.io/dockerize-node-app/azure-vote-front:sha256:034ef1d1e090e337ab36b7497f9d0416e31d0749dc9f8946fe86ac0063863952'
           pull-images: false 
