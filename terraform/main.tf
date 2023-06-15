@@ -56,7 +56,8 @@ resource "azurerm_resource_group" "rg" {
   name     = "myTFResourceGroup2"
   location = "westus2"
 }
-resource "azurerm_resource_group" "rg" {
+
+resource "azurerm_resource_group" "rg3" {
   name     = "myTFResourceGroup3"
   location = "westus2"
 }
