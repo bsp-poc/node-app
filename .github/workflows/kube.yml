@@ -1,0 +1,35 @@
+name: Deploy to AKS
+
+on:
+    push:
+      branches: [ "kube" ]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login
+        id: login
+        uses: azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: '${{ secrets.AZURE_RESOURCE_GROUP }}' 
+          cluster-name: '${{ secrets.AZURE_AKS_CLUSTER_NAME }}'
+          
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Deploy to AKS
+        id: deploy-aks
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+          manifests: |
+             azure-vote-all-in-one-redis.yaml
+          images: 'bsppoc.azurecr.io/dockerize-node-app/azure-vote-front:sha256:034ef1d1e090e337ab36b7497f9d0416e31d0749dc9f8946fe86ac0063863952'
+          pull-images: false 
