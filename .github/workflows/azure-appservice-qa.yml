@@ -83,48 +83,6 @@ jobs:
       with:
         name: node-app
         path: .
-      
-    
-  publish-gpr: # package management - publish to npm
-    needs:
-      - build
-      - sonarcloud
-    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/uat' || github.ref == 'refs/heads/main' 
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - uses: actions/checkout@v3
-      - name: replace values MY_PAT_SECRET with GH PAT
-        uses: jacobtomlinson/gha-find-replace@v3
-        with:
-          find: "MY_PAT_SECRET"
-          replace: ${{ secrets.GITHUB_TOKEN }}
-          include: "**.npmrc"
-          exclude: ".git/**"
-
-      - name: read .npmrc 
-        id: readnpmrc
-        uses: jaywcjlove/github-action-read-file@main
-        with:
-          path: .npmrc
-      
-      - name: print .npmrc
-        run: |
-          echo "==========================================="
-          echo "${{ steps.readnpmrc.outputs.content }}"
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: https://npm.pkg.github.com/
-          scope: '@bsp-poc'
-      - run: npm install
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN : ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
 
   deploy: 
