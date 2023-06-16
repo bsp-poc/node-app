@@ -1,0 +1,55 @@
+
+name: "NPM - Deploy to <QA>"
+on:
+  push:
+    branches: [ "npm-package" ]
+  workflow_dispatch:
+
+env:
+  AZURE_PUBLISH_PROFILE: 'secrets.AZUREAPPSERVICE_PUBLISHPROFILE_441B36245F134200B9C77A716EE5BDA7'
+  AZURE_WEBAPP_NAME: 'node-poc'    # Azure App Service: Web App Name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '18.x'                # set this to the node version to use
+  AZURE_DEPLOYMENT_SLOT: 'qa'
+
+permissions:
+  contents: read
+  
+
+jobs:
+
+  publish-gpr: # package management - publish to npm
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+      - name: replace values MY_PAT_SECRET with GH PAT
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "MY_PAT_SECRET"
+          replace: ${{ secrets.GITHUB_TOKEN }}
+          include: "**.npmrc"
+          exclude: ".git/**"
+
+      - name: read .npmrc 
+        id: readnpmrc
+        uses: jaywcjlove/github-action-read-file@main
+        with:
+          path: .npmrc
+      
+      - name: print .npmrc
+        run: |
+          echo "==========================================="
+          echo "${{ steps.readnpmrc.outputs.content }}"
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com/
+          scope: '@bsp-poc'
+      - run: npm install
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN : ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
