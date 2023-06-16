@@ -2,7 +2,7 @@ on:
   push:
     branches: [ "terraform" ]
 
-name: AzureCLISample
+name: AzureCLISample - Terraform
 permissions:
   contents: read
   pages: write
