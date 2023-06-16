@@ -6,7 +6,15 @@ var app = express();
 let appInsights = require("applicationinsights");
 
 appInsights.setup("InstrumentationKey=8dfd45ed-33b9-4a33-bdb1-e81ac667f611;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/")
-.setAutoDependencyCorrelation(false)
+.setAutoDependencyCorrelation(true)
+.setAutoCollectRequests(true)
+.setAutoCollectPerformance(true, true)
+.setAutoCollectExceptions(true)
+.setAutoCollectDependencies(true)
+.setAutoCollectConsole(true)
+.setUseDiskRetryCaching(true)
+.setSendLiveMetrics(false)
+.setDistributedTracingMode(appInsights.DistributedTracingModes.AI)
 .start();
 
 // view engine setup
